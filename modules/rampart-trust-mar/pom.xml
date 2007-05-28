@@ -7,7 +7,7 @@
     <groupId>org.apache.rampart</groupId>
     <artifactId>rahas</artifactId>
     <packaging>mar</packaging>
-    <version>SNAPSHOT</version>
+    <version>1.2</version>
     <name>Rampart - Trust-Mar</name>
 
     <scm>

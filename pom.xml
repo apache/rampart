@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
     <description>WS-Security, WS-Trust and WS-SecureConversation implementaion for Apache
         Axis2</description>
-    <version>SNAPSHOT</version>
+    <version>1.2</version>
     <name>Apache Rampart</name>
     <url>http://ws.apache.org/rampart</url>
 
@@ -398,7 +398,7 @@
         <module>modules/rampart-tests</module>
         <module>modules/rampart-mar</module>
         <module>modules/rampart-trust-mar</module>
-        <module>modules/rampart-integration</module>
+        <!--<module>modules/rampart-integration</module>-->
     </modules>
 
     <properties>
