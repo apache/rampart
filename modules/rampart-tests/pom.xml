@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.apache.rampart</groupId>
         <artifactId>rampart-project</artifactId>
-        <version>1.2</version>
+        <version>1.21</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rampart-tests</artifactId>
     <packaging>jar</packaging>
-    <version>1.2</version>
+    <version>1.21</version>
     <name>Rampart - Test Suite</name>
 
     <build>

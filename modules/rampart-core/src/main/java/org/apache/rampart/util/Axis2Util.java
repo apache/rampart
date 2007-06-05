@@ -25,6 +25,8 @@ import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAP12Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axiom.soap.SOAPHeaderBlock;
 import org.apache.axiom.soap.impl.builder.StAXSOAPModelBuilder;
 import org.apache.rampart.handler.WSSHandlerConstants;
 import org.apache.ws.security.WSSecurityException;
@@ -32,6 +34,7 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -39,6 +42,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Utility class for the Axis2-WSS4J Module
@@ -92,6 +98,16 @@ public class Axis2Util {
                 if (firstElement != null) {
                     firstElement.build();
                 }
+                
+                //Get processed headers
+                Iterator headerBlocs = env.getHeader().getChildElements();
+                ArrayList processedHeaderQNames = new ArrayList();
+                while (headerBlocs.hasNext()) {
+                    SOAPHeaderBlock element = (SOAPHeaderBlock) headerBlocs.next();
+                    if(element.isProcessed()) {
+                        processedHeaderQNames.add(element.getQName());
+                    }
+                }
 
                 // Check the namespace and find SOAP version and factory
                 String nsURI = null;
@@ -110,7 +126,18 @@ public class Axis2Util {
                 SOAPEnvelope envelope = (stAXSOAPModelBuilder)
                         .getSOAPEnvelope();
                 ((OMNode) envelope.getParent()).build();
-
+                
+                //Set the processed flag of the processed headers
+                SOAPHeader header = envelope.getHeader();
+                for (Iterator iter = processedHeaderQNames.iterator(); iter
+                        .hasNext();) {
+                    QName name = (QName) iter.next();
+                    Iterator omKids = header.getChildrenWithName(name);
+                    if(omKids.hasNext()) {
+                        ((SOAPHeaderBlock)omKids.next()).setProcessed();
+                    }
+                }
+                
                 Element envElem = (Element) envelope;
                 return envElem.getOwnerDocument();
             } else {
@@ -135,11 +162,34 @@ public class Axis2Util {
 
         if(useDoom) {
             try {
+                //Get processed headers
+                SOAPEnvelope env = (SOAPEnvelope)doc.getDocumentElement(); 
+                Iterator headerBlocs = env.getHeader().getChildElements();
+                ArrayList processedHeaderQNames = new ArrayList();
+                while (headerBlocs.hasNext()) {
+                    SOAPHeaderBlock element = (SOAPHeaderBlock) headerBlocs.next();
+                    if(element.isProcessed()) {
+                        processedHeaderQNames.add(element.getQName());
+                    }
+                }
+                
                 XMLStreamReader reader = ((OMElement) doc.getDocumentElement())
                         .getXMLStreamReader();
                 StAXSOAPModelBuilder stAXSOAPModelBuilder = new StAXSOAPModelBuilder(
                         reader, null);
                 SOAPEnvelope envelope = stAXSOAPModelBuilder.getSOAPEnvelope();
+                
+                //Set the processed flag of the processed headers
+                SOAPHeader header = envelope.getHeader();
+                for (Iterator iter = processedHeaderQNames.iterator(); iter
+                        .hasNext();) {
+                    QName name = (QName) iter.next();
+                    Iterator omKids = header.getChildrenWithName(name);
+                    if(omKids.hasNext()) {
+                        ((SOAPHeaderBlock)omKids.next()).setProcessed();
+                    }
+                }
+                
                 envelope.build();
                 return envelope;
 
@@ -196,3 +246,4 @@ public class Axis2Util {
     }
     
 }
+
