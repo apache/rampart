@@ -299,7 +299,7 @@ public class RampartMessageData {
 
             this.customClassLoader = msgCtx.getAxisService().getClassLoader();
             
-            if(this.policyData != null) {
+            if(this.sender && this.policyData != null) {
                 this.secHeader = new WSSecHeader();
                 secHeader.insertSecurityHeader(this.document);
             }
