@@ -173,26 +173,9 @@ public class RampartMessageData {
                 }
             }
             
-            //If the policy is already available in the service, then use it
-            String msgPolicyKey = getMessagePolicyKey(msgCtx);
-            if(msgCtx.getProperty(msgPolicyKey) != null) {
-                this.servicePolicy = (Policy)msgCtx.getProperty(msgPolicyKey);
-            } 
-            
-            String operationPolicyKey = getOperationPolicyKey(msgCtx);
-            if(msgCtx.getProperty(operationPolicyKey) != null) {
-                this.servicePolicy = (Policy)msgCtx.getProperty(operationPolicyKey);
-            } 
-            
-            String svcPolicyKey = getServicePolicyKey(msgCtx);
-            if(this.servicePolicy == null && msgCtx.getProperty(svcPolicyKey) != null) {
-                this.servicePolicy = (Policy)msgCtx.getProperty(svcPolicyKey);
-            }
-            
             if(msgCtx.getProperty(KEY_RAMPART_POLICY) != null) {
                 this.servicePolicy = (Policy)msgCtx.getProperty(KEY_RAMPART_POLICY);
             }
-            
             
             /*
              * Init policy:
@@ -211,14 +194,6 @@ public class RampartMessageData {
                     OMElement policyElem = param.getParameterElement().getFirstElement();
                     this.servicePolicy = PolicyEngine.getPolicy(policyElem);
                 }
-
-                //Set the policy in the config ctx
-                msgCtx.getConfigurationContext().setProperty(
-                        RampartMessageData.getServicePolicyKey(msgCtx), this.servicePolicy);
-            }
-            
-            if(this.isInitiator && this.servicePolicy != null) {
-                msgCtx.getServiceContext().setProperty(RampartMessageData.KEY_RAMPART_POLICY, this.servicePolicy);
             }
             
             if(this.servicePolicy != null){
