@@ -1,10 +1,11 @@
 <project name="Apache Rampart release build" default="dist">
 
-    <property name="rampart.version" value="SNAPSHOT"/>
+    <property name="rampart.version" value="1.3-SNAPSHOT"/>
     <property name="rampart.bin.dist" value="rampart"/>
     <property name="rampart.src.dist" value="rampart-src"/>
     <property name="rampart.docs.dist" value="rampart-docs"/>
-    
+    <property name="rampart.mar.version" value="1.3"/>    
+
     <property name="dir.dist" value="dist"/>
     <property name="dir.dist.bin" value="${dir.dist}/bin/${rampart.bin.dist}-${rampart.version}"/>
     <property name="dir.dist.src" value="${dir.dist}/src/${rampart.src.dist}-${rampart.version}"/>
@@ -29,9 +30,9 @@
     </target>
     
     <target name="dist" depends="clean, bin-dist, src-dist, docs-dist">
-        <copy todir="${dir.dist}" file="modules/rampart-mar/target/rampart-${rampart.version}.mar"/>
-		<copy todir="${dir.dist}" file="modules/rampart-trust-mar/target/rahas-${rampart.version}.mar"/>
-	    <copy todir="${dir.dist}" file="modules/rampart-core/target/rampart-core-${rampart.version}.jar"/>
+        <copy todir="${dir.dist}" file="modules/rampart-mar/target/rampart-${rampart.mar.version}.mar"/>
+	<copy todir="${dir.dist}" file="modules/rampart-trust-mar/target/rahas-${rampart.mar.version}.mar"/>
+        <copy todir="${dir.dist}" file="modules/rampart-core/target/rampart-core-${rampart.version}.jar"/>
         <copy todir="${dir.dist}" file="modules/rampart-policy/target/rampart-policy-${rampart.version}.jar"/>
         <copy todir="${dir.dist}" file="modules/rampart-trust/target/rampart-trust-${rampart.version}.jar"/>
     </target>
@@ -47,8 +48,8 @@
         
         <!-- Modules -->
         <echo>Copying mars in to modules</echo>
-        <copy todir="${dir.dist.bin}" file="modules/rampart-mar/target/rampart-${rampart.version}.mar"/>
-        <copy todir="${dir.dist.bin}" file="modules/rampart-trust-mar/target/rahas-${rampart.version}.mar"/>
+        <copy todir="${dir.dist.bin}" file="modules/rampart-mar/target/rampart-${rampart.mar.version}.mar"/>
+        <copy todir="${dir.dist.bin}" file="modules/rampart-trust-mar/target/rahas-${rampart.mar.version}.mar"/>
         
         <!-- All dep jars -->
         <echo>Copying dependencies into lib</echo>
