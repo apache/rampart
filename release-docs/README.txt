@@ -1,5 +1,5 @@
 ======================================================
-Apache Rampart-1.2 build  (May 29, 2007)
+Apache Rampart-1.3 build  (August 21, 2007)
 
 http://ws.apache.org/axis2/modules/rampart/
 ------------------------------------------------------
@@ -13,8 +13,8 @@ lib      - This directory contains all the libraries required by rampart
            release.
 	   
 
-rampart-1.2.mar   - WS-Security and WS-SecureConversation support for Axis2
-rahas-1.2.mar     - STS module - to be used to add STS operations to a service
+rampart-1.3.mar   - WS-Security and WS-SecureConversation support for Axis2
+rahas-1.3.mar     - STS module - to be used to add STS operations to a service
 
 samples  - This contains samples on using Apache Rampart and configuring
            different conponents to carryout different WS-Sec* operations.
