@@ -1,5 +1,5 @@
 ======================================================
-Apache Rampart-1.3 build  (August 21, 2007)
+Apache Rampart-1.3 build  (August 22, 2007)
 
 http://ws.apache.org/axis2/modules/rampart/
 ------------------------------------------------------
@@ -36,15 +36,15 @@ ___________________
 Support
 ===================
  
-Any problem with this release can be reported to Axis mailing list
+Any problem with this release can be reported to Apache Rampart mailing list
 or in the JIRA issue tracker. If you are sending an email to the mailing
 list make sure to add the [Rampart] prefix to the subject.
 
 Mailing list subscription:
-    axis-dev-subscribe@ws.apache.org
+    rampart-dev-subscribe@ws.apache.org
 
 Jira:
-    http://issues.apache.org/jira/browse/AXIS2
+    http://issues.apache.org/jira/browse/RAMPART
     (Component - modules)
 
 
