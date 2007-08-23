@@ -1,5 +1,5 @@
 ======================================================
-Apache Rampart-1.3 build  (August 22, 2007)
+Apache Rampart-1.3 build  (August 23, 2007)
 
 http://ws.apache.org/axis2/modules/rampart/
 ------------------------------------------------------
