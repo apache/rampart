@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.apache.rampart</groupId>
         <artifactId>rampart-project</artifactId>
-        <version>SNAPSHOT</version>
+        <version>642186</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rampart-documentaion</artifactId>
