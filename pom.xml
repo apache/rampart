@@ -85,18 +85,13 @@
     <repositories>
         <repository>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-            <id>apache-snapshots</id>
-            <name>Apache Maven2 SNAPSHOTS</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <id>axis2-rc2</id>
+            <name>Apache Axis2 RC2 repo</name>
+            <url>http://people.apache.org/~dims/axis2-1.4/RC2/m2-repo</url>
             <layout>default</layout>
         </repository>
         <repository>
@@ -190,7 +185,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
-            <artifactId>mex-impl</artifactId>
+            <artifactId>mex</artifactId>
             <version>${axis2.version}</version>
         </dependency>
         <dependency>
@@ -474,16 +469,16 @@
 		<rampart.version>${pom.version}</rampart.version>
         <rampart.mar.version>SNAPSHOT</rampart.mar.version>
 		<rahas.mar.version>SNAPSHOT</rahas.mar.version>
-		<axis2.version>SNAPSHOT</axis2.version>
-        <neethi.version>SNAPSHOT</neethi.version>
-        <axiom.version>SNAPSHOT</axiom.version>
+		<axis2.version>640261</axis2.version>
+        <neethi.version>634514</neethi.version>
+        <axiom.version>640198</axiom.version>
         <wss4j.version>SNAPSHOT</wss4j.version>
-        <woden.version>1.0-SNAPSHOT</woden.version>
+        <woden.version>634519</woden.version>
         <addressing.mar.version>SNAPSHOT</addressing.mar.version>
 
-        <xmlsec.version>1.4.0</xmlsec.version>
+        <xmlsec.version>1.4.1</xmlsec.version>
         <opensaml.version>1.1</opensaml.version>
-        <XmlSchema.version>SNAPSHOT</XmlSchema.version>
+        <XmlSchema.version>640087</XmlSchema.version>
 
         <xbean.version>2.1.0</xbean.version>
         <wsdl4j.version>1.6.2</wsdl4j.version>
@@ -512,7 +507,7 @@
         <xmlunit.version>1.1</xmlunit.version>
         <log4j.version>1.2.15</log4j.version>
 
-        <jakarta.httpcore.version>4.0-alpha6</jakarta.httpcore.version>
+        <jakarta.httpcore.version>4.0-beta1</jakarta.httpcore.version>
         <commons.collections.version>3.1</commons.collections.version>
         <commons.fileupload.version>1.2</commons.fileupload.version>
         <commons.discovery.version>0.2</commons.discovery.version>
