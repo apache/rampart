@@ -34,18 +34,24 @@ public class TokenRequestDispatcherConfig {
     private final static QName DISPATCHER_CONFIG = new QName("token-dispatcher-configuration");
     private final static QName ISSUER = new QName("issuer");
     private final static QName CANCELER = new QName("canceler");
+    private final static QName VALIDATOR = new QName("validator");
+    private final static QName RENEWER = new QName("renewer");
     private final static QName TOKEN_TYPE = new QName("tokenType");
     private final static QName CLASS_ATTR = new QName("class");
     private final static QName DEFAULT_ATTR = new QName("default");
     private final static QName CONFIGURATION_ELEMENT = new QName("configuration");
 
     private Map issuers;
+    private Map validators;
+    private Map renewers;
     private Map configFiles = new Hashtable();
     private Map configElements = new Hashtable();
     private Map configParamNames = new Hashtable();
 
     private String defaultIssuerClassName;
     private String defaultCancelerClassName;
+    private String defaultValidatorClassName;
+    private String defaultRenewerClassName;
 
     public static TokenRequestDispatcherConfig load(OMElement configElem) throws TrustException {
 
@@ -56,9 +62,17 @@ public class TokenRequestDispatcherConfig {
 
         // Issuers
         handleIssuers(configElem, conf);
-
+        
+        //Validators
+        handleValidators(configElem, conf);
+        
+        //Renewers
+        handleRenewers(configElem, conf);
+        
         // Cancelers
         handleCancelers(configElem, conf);
+        
+        
 
         //There must be a defulat issuer
         if (conf.defaultIssuerClassName == null) {
@@ -128,6 +142,98 @@ public class TokenRequestDispatcherConfig {
             }
         }
     }
+    
+    private static void handleValidators(OMElement configElem,
+            TokenRequestDispatcherConfig conf) throws TrustException {
+        
+        for (Iterator validatorElems = configElem.getChildrenWithName(VALIDATOR);
+        validatorElems.hasNext();) {
+
+            OMElement element = (OMElement) validatorElems.next();
+
+           //get the class attr
+           String validatorClass = element.getAttributeValue(CLASS_ATTR);
+           if (validatorClass == null) {
+               throw new TrustException("missingClassName");
+           }
+           String isDefault = element.getAttributeValue(DEFAULT_ATTR);
+           if (isDefault != null && "true".equalsIgnoreCase(isDefault)) {
+               //Use the first default issuer as the default isser
+               if (conf.defaultValidatorClassName == null) {
+                   conf.defaultValidatorClassName = validatorClass;
+               } else {
+                   throw new TrustException("badDispatcherConfigMultipleDefaultValidators");
+               }
+           }
+
+           processConfiguration(element, conf, validatorClass);
+    
+           //Process token types
+           for (Iterator tokenTypes = element.getChildrenWithName(TOKEN_TYPE);
+                tokenTypes.hasNext();) {
+               OMElement type = (OMElement) tokenTypes.next();
+               String value = type.getText();
+               if (value == null || value.trim().length() == 0) {
+                   throw new TrustException("invalidTokenTypeDefinition",
+                                            new String[]{"Validator", validatorClass});
+               }
+               if (conf.validators == null) {
+                   conf.validators = new Hashtable();
+               }
+               //If the token type is not already declared then add it to the
+               //table with the validator classname
+               if (!conf.validators.keySet().contains(value)) {
+                   conf.validators.put(value, validatorClass);
+               }
+           }
+        }       
+    }
+    
+    private static void handleRenewers(OMElement configElem,
+            TokenRequestDispatcherConfig conf) throws TrustException {
+        
+        for (Iterator renewerElems = configElem.getChildrenWithName(RENEWER);
+        renewerElems.hasNext();) {
+
+            OMElement element = (OMElement) renewerElems.next();
+
+           //get the class attr
+           String renewerClass = element.getAttributeValue(CLASS_ATTR);
+           if (renewerClass == null) {
+               throw new TrustException("missingClassName");
+           }
+           String isDefault = element.getAttributeValue(DEFAULT_ATTR);
+           if (isDefault != null && "true".equalsIgnoreCase(isDefault)) {
+               //Use the first default issuer as the default isser
+               if (conf.defaultRenewerClassName == null) {
+                   conf.defaultRenewerClassName = renewerClass;
+               } else {
+                   throw new TrustException("badDispatcherConfigMultipleDefaultRenewers");
+               }
+           }
+
+           processConfiguration(element, conf, renewerClass);
+    
+           //Process token types
+           for (Iterator tokenTypes = element.getChildrenWithName(TOKEN_TYPE);
+                tokenTypes.hasNext();) {
+               OMElement type = (OMElement) tokenTypes.next();
+               String value = type.getText();
+               if (value == null || value.trim().length() == 0) {
+                   throw new TrustException("invalidTokenTypeDefinition",
+                                            new String[]{"Renewer", renewerClass});
+               }
+               if (conf.renewers == null) {
+                   conf.renewers = new Hashtable();
+               }
+               //If the token type is not already declared then add it to the
+               //table with the renwer classname
+               if (!conf.renewers.keySet().contains(value)) {
+                   conf.renewers.put(value, renewerClass);
+               }
+           }
+        }       
+    }
 
     private static void processConfiguration(OMElement element,
                                              TokenRequestDispatcherConfig conf,
@@ -190,6 +296,33 @@ public class TokenRequestDispatcherConfig {
             return null;
         }
     }
+    
+    public TokenValidator getDefaultValidatorInstance() throws TrustException {
+        if (this.defaultValidatorClassName != null) {
+            try {
+                return createValidator(this.defaultValidatorClassName);
+            } catch (Exception e) {
+                throw new TrustException("cannotLoadClass",
+                                         new String[]{this.defaultValidatorClassName}, e);
+            }
+        } else {
+            return null;
+        }
+    }
+    
+    public TokenRenewer getDefaultRenewerInstance() throws TrustException {
+        if (this.defaultRenewerClassName != null) {
+            try {
+                return createRenewer(this.defaultRenewerClassName);
+            } catch (Exception e) {
+                throw new TrustException("cannotLoadClass",
+                                         new String[]{this.defaultRenewerClassName}, e);
+            }
+        } else {
+            return null;
+        }
+    }
+    
 
     public String getDefaultIssuerName() {
         return this.defaultIssuerClassName;
@@ -210,7 +343,43 @@ public class TokenRequestDispatcherConfig {
             return createIssuer(issuerClassName);
         } catch (Exception e) {
             throw new TrustException("cannotLoadClass",
-                                     new String[]{this.defaultIssuerClassName}, e);
+                                     new String[]{issuerClassName}, e);
+        }
+    }
+    
+    public TokenValidator getValidator(String tokenType) throws TrustException {
+        String validatorClassName = null;
+        //try to find the validator class name from the tokenType<->validator map
+        if (this.validators != null) {
+            validatorClassName = (String) this.validators.get(tokenType);
+        }
+        //If a specific validator is not found use the default validator
+        if (validatorClassName == null) {
+            validatorClassName = this.defaultValidatorClassName;
+        }
+        try {
+            return createValidator(validatorClassName);
+        } catch (Exception e) {
+            throw new TrustException("cannotLoadClass",
+                                     new String[]{validatorClassName}, e);
+        }
+    }
+    
+    public TokenRenewer getRenewer(String tokenType) throws TrustException {
+        String renewerClassName = null;
+        //try to find the renewer class name from the tokenType<->Renewer map
+        if (this.renewers != null) {
+            renewerClassName = (String) this.renewers.get(tokenType);
+        }
+        //If a specific renewer is not found use the default renewer
+        if (renewerClassName == null) {
+            renewerClassName = this.defaultRenewerClassName;
+        }
+        try {
+            return createRenewer(renewerClassName);
+        } catch (Exception e) {
+            throw new TrustException("cannotLoadClass",
+                                     new String[]{renewerClassName}, e);
         }
     }
 
@@ -232,5 +401,21 @@ public class TokenRequestDispatcherConfig {
         canceler.setConfigurationFile((String) this.configFiles.get(cancelerClassName));
         canceler.setConfigurationParamName((String) this.configParamNames.get(cancelerClassName));
         return canceler;
+    }
+    
+    private TokenValidator createValidator(String validatorClassName) throws Exception {
+        TokenValidator validator = (TokenValidator) Loader.loadClass(validatorClassName).newInstance();
+        validator.setConfigurationElement((OMElement) this.configElements.get(validatorClassName));
+        validator.setConfigurationFile((String) this.configFiles.get(validatorClassName));
+        validator.setConfigurationParamName((String) this.configParamNames.get(validatorClassName));
+        return validator;
+    }
+    
+    private TokenRenewer createRenewer (String renewerClassName) throws Exception {
+        TokenRenewer renewer = (TokenRenewer) Loader.loadClass(renewerClassName).newInstance();
+        renewer.setConfigurationElement((OMElement) this.configElements.get(renewerClassName));
+        renewer.setConfigurationFile((String) this.configFiles.get(renewerClassName));
+        renewer.setConfigurationParamName((String) this.configParamNames.get(renewerClassName));
+        return renewer;
     }
 }

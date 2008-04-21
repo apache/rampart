@@ -89,9 +89,9 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
-            <id>axis2-rc2</id>
-            <name>Apache Axis2 RC2 repo</name>
-            <url>http://people.apache.org/~dims/axis2-1.4/RC2/m2-repo</url>
+            <id>axis2-rc4</id>
+            <name>Apache Axis2 RC4 repo</name>
+            <url>http://people.apache.org/~dims/axis2-1.4/RC4/m2-repo/</url>
             <layout>default</layout>
         </repository>
         <repository>
@@ -469,16 +469,16 @@
 		<rampart.version>${pom.version}</rampart.version>
         <rampart.mar.version>642186</rampart.mar.version>
 		<rahas.mar.version>642186</rahas.mar.version>
-		<axis2.version>640261</axis2.version>
-        <neethi.version>634514</neethi.version>
-        <axiom.version>640198</axiom.version>
-        <wss4j.version>SNAPSHOT</wss4j.version>
+		<axis2.version>1.4</axis2.version>
+        <neethi.version>2.0.4</neethi.version>
+        <axiom.version>1.2.7</axiom.version>
+        <wss4j.version>1.5.4-RC1</wss4j.version>
         <woden.version>634519</woden.version>
         <addressing.mar.version>SNAPSHOT</addressing.mar.version>
 
         <xmlsec.version>1.4.1</xmlsec.version>
         <opensaml.version>1.1</opensaml.version>
-        <XmlSchema.version>640087</XmlSchema.version>
+        <XmlSchema.version>1.4.2</XmlSchema.version>
 
         <xbean.version>2.1.0</xbean.version>
         <wsdl4j.version>1.6.2</wsdl4j.version>

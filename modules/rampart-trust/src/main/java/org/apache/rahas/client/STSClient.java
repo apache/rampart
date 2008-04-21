@@ -38,6 +38,7 @@ import org.apache.neethi.Assertion;
 import org.apache.neethi.Policy;
 import org.apache.rahas.RahasConstants;
 import org.apache.rahas.Token;
+import org.apache.rahas.TokenStorage;
 import org.apache.rahas.TrustException;
 import org.apache.rahas.TrustUtil;
 import org.apache.ws.secpolicy.model.AlgorithmSuite;
@@ -50,6 +51,7 @@ import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.conversation.ConversationException;
 import org.apache.ws.security.conversation.dkalgo.P_SHA1;
 import org.apache.ws.security.message.token.Reference;
+import org.apache.ws.security.message.token.SecurityTokenReference;
 import org.apache.ws.security.processor.EncryptedKeyProcessor;
 import org.apache.ws.security.util.WSSecurityUtil;
 import org.w3c.dom.Element;
@@ -84,7 +86,7 @@ public class STSClient {
 
     private byte[] requestorEntropy;
 
-    private String addressingNs = AddressingConstants.Final.WSA_NAMESPACE;
+    private String addressingNs = AddressingConstants.Submission.WSA_NAMESPACE;
 
     private int keySize;
     
@@ -164,6 +166,74 @@ public class STSClient {
             log.error("errorInCancelingToken", e);
             throw new TrustException("errorInCancelingToken", e);
         }
+    }
+    
+    public boolean validateToken(String tokenId,
+                                 String issuerAddress,
+                                 Policy issuerPolicy) throws TrustException {
+        try {
+            QName rstQn = new QName("requestSecurityToken");
+            String requestType =
+                    TrustUtil.getWSTNamespace(version) + RahasConstants.REQ_TYPE_VALIDATE;
+            
+            ServiceClient client = getServiceClient(rstQn, issuerAddress);
+            
+            client.getServiceContext().setProperty(RAMPART_POLICY, issuerPolicy);
+            client.getOptions().setSoapVersionURI(this.soapVersion);
+            if(this.addressingNs != null) {
+                client.getOptions().setProperty(AddressingConstants.WS_ADDRESSING_VERSION, this.addressingNs);
+            }
+            client.engageModule("addressing");
+            client.engageModule("rampart");
+
+            this.processPolicy(issuerPolicy, null);
+            
+            OMElement response = client.sendReceive(rstQn,
+                                                    createValidateRequest(requestType,tokenId));
+
+            System.out.println(response.toString());
+            
+            return true;
+            
+            
+        } catch (AxisFault e) {
+            log.error("errorInValidatingToken", e);
+            throw new TrustException("errorInValidatingToken", new String[]{issuerAddress});
+        }
+        
+    }
+    
+    public boolean renewToken(String tokenId,
+                              String issuerAddress,
+                              Policy issuerPolicy) throws TrustException {
+        
+        try {
+        QName rstQn = new QName("requestSecurityToken");
+        
+        ServiceClient client = getServiceClient(rstQn, issuerAddress);
+        
+        client.getServiceContext().setProperty(RAMPART_POLICY, issuerPolicy);
+        client.getOptions().setSoapVersionURI(this.soapVersion);
+        if(this.addressingNs != null) {
+            client.getOptions().setProperty(AddressingConstants.WS_ADDRESSING_VERSION, this.addressingNs);
+        }
+        client.engageModule("addressing");
+        client.engageModule("rampart");
+
+        this.processPolicy(issuerPolicy, null);
+        
+        String tokenType = RahasConstants.TOK_TYPE_SAML_10;
+        
+        OMElement response = client.sendReceive(rstQn,
+                                                createRenewRequest(tokenType,tokenId));
+        
+        return true;
+        
+        } catch (AxisFault e) {
+            log.error("errorInRenewingToken", e);
+            throw new TrustException("errorInRenewingToken", new String[]{issuerAddress}); 
+        }
+        
     }
     
     private ServiceClient getServiceClient(QName rstQn,
@@ -510,6 +580,82 @@ public class STSClient {
 
         
         return rst;
+        
+    }
+    
+    private OMElement createValidateRequest(String requestType, String tokenId) throws TrustException {
+        
+        log.debug("Creating request with request type: " + requestType);
+        
+        OMElement rst = TrustUtil.createRequestSecurityTokenElement(version);
+        
+        TrustUtil.createRequestTypeElement(this.version, rst, requestType);
+        
+        OMElement tokenTypeElem = TrustUtil.createTokenTypeElement(this.version, rst);
+        
+        String tokenType =
+            TrustUtil.getWSTNamespace(version) + RahasConstants.TOK_TYPE_STATUS;
+        
+        tokenTypeElem.setText(tokenType);
+        
+        TokenStorage store = TrustUtil.getTokenStore(configCtx);
+        
+        Token token = store.getToken(tokenId);
+        
+        if ( token != null) {
+            
+            OMElement str = token.getUnattachedReference();     
+            
+            if (str == null) {
+                str = token.getAttachedReference();
+            }
+            
+            TrustUtil.createValidateTargetElement(this.version, rst,str);
+            
+            
+        } else {
+            throw new TrustException("noToken",new String[]{tokenId});
+        }
+              
+        return rst;
+             
+    }
+    
+    private OMElement createRenewRequest(String tokenType, String tokenId) throws TrustException {
+        
+        String requestType =
+            TrustUtil.getWSTNamespace(version) + RahasConstants.REQ_TYPE_RENEW;
+        
+        log.debug("Creating request with request type: " + requestType);
+        
+        OMElement rst = TrustUtil.createRequestSecurityTokenElement(version);
+        
+        TrustUtil.createRequestTypeElement(this.version, rst, requestType);
+        
+        OMElement tokenTypeElem = TrustUtil.createTokenTypeElement(version, rst);
+        tokenTypeElem.setText(tokenType);
+        
+        TokenStorage store = TrustUtil.getTokenStore(configCtx);
+        
+        Token token = store.getToken(tokenId);
+        
+        if ( token != null) {
+            
+            OMElement str = token.getUnattachedReference();     
+            
+            if (str == null) {
+                str = token.getAttachedReference();
+            }
+            
+            TrustUtil.createRenewTargetElement(this.version, rst,str);
+            
+            
+        } else {
+            throw new TrustException("noToken",new String[]{tokenId});
+        }
+        
+        return rst;
+              
         
     }
 
