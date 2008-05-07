@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.apache.rampart</groupId>
         <artifactId>rampart-project</artifactId>
-        <version>642186</version>
+        <version>642231</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,8 +19,11 @@
         <resources>
             <resource>
                 <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>                     
+                </excludes>
             </resource>
-        </resources>
+        </resources> 
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
