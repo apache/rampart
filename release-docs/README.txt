@@ -1,5 +1,5 @@
 ======================================================
-Apache Rampart-1.2 build  (May 29, 2007)
+Apache Rampart-1.4 build  (May XX, 2008)
 
 http://ws.apache.org/axis2/modules/rampart/
 ------------------------------------------------------
@@ -30,33 +30,20 @@ unlimited security jurisdiction as some of the test cases use key size of
 and extract the jar files local_policy.jar and US_export_policy.jar to 
 $JAVA_HOME/jre/lib/security. These files are listed in sun download site,
 under the your JDK version as Java(TM) Cryptography Extension (JCE) Unlimited 
-Strength Jurisdiction Policy Files.     
+Strength Jurisdiction Policy Files. 
 
-Before you engage Rampart 
-You have to make a small change to the default axis2.xml by adding the security 
-phase to OutFaultFlow. Security phase should be added just after the MessageOut 
-phase.
-
-eg.
-<phaseOrder type="OutFaultFlow">
-    <!--      user can add his own phases to this area  -->
-    <phase name="OperationOutFaultPhase"/>
-    <phase name="RMPhase"/>
-    <phase name="PolicyDetermination"/>
-    <phase name="MessageOut"/>
-    *<phase name="Security"/>* 
-</phaseOrder>
+Bouncy castle jars are no longer shipped with Rampart binary distribution
+due some patent issues.But as bouncy castle jars are necessary for Rampart, users 
+will have to manually download and copy the bouncy castle jar corresponding the
+relevant JDK. Bouncy castle jars can be downloaded from 
+http://www.bouncycastle.org/latest_releases.html 
  
-
 Before you try any of the samples makesure you
 
 1.) Have the Axis2 standard binary distribution downloaded and extracted.
 2.) Set the AXIS2_HOME environment variable
 3.) Run ant from the "samples" directory to copy the required libraries and
     modules to relevant directories in AXIS2_HOME.
-4.) Download xalan-2.7.0.jar from here[1] and put under AXIS2_HOME\lib folder,
-    if you use JDK 1.5.
-
 
 ___________________
 Crypto Notice
@@ -107,5 +94,3 @@ Jira:
 Thank you for using Apache Rampart!
 
 The Apache Rampart team. 
-
-[1] http://www.apache.org/dist/java-repository/xalan/jars/
