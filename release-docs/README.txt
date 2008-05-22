@@ -79,16 +79,14 @@ ___________________
 Support
 ===================
  
-Any problem with this release can be reported to Axis mailing list
-or in the JIRA issue tracker. If you are sending an email to the mailing
-list make sure to add the [Rampart] prefix to the subject.
+Any problem with this release can be reported to Rampart mailing list
+or in the JIRA issue tracker.
 
 Mailing list subscription:
-    axis-dev-subscribe@ws.apache.org
+    rampart-dev-subscribe@ws.apache.org
 
 Jira:
-    http://issues.apache.org/jira/browse/AXIS2
-    (Component - modules)
+    http://issues.apache.org/jira/browse/RAMPART
 
 
 Thank you for using Apache Rampart!
