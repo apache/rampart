@@ -1,7 +1,7 @@
 ======================================================
 Apache Rampart-1.4 build  (May XX, 2008)
 
-http://ws.apache.org/axis2/modules/rampart/
+http://ws.apache.org/rampart
 ------------------------------------------------------
 
 ___________________
@@ -13,8 +13,8 @@ lib      - This directory contains all the libraries required by rampart
            release.
 	   
 
-rampart-1.2.mar   - WS-Security and WS-SecureConversation support for Axis2
-rahas-1.2.mar     - STS module - to be used to add STS operations to a service
+rampart-1.4.mar   - WS-Security and WS-SecureConversation support for Axis2
+rahas-1.4.mar     - STS module - to be used to add STS operations to a service
 
 samples  - This contains samples on using Apache Rampart and configuring
            different components to carryout different WS-Sec* operations.
@@ -37,6 +37,16 @@ due some patent issues.But as bouncy castle jars are necessary for Rampart, user
 will have to manually download and copy the bouncy castle jar corresponding the
 relevant JDK. Bouncy castle jars can be downloaded from 
 http://www.bouncycastle.org/latest_releases.html 
+
+Adding bouncycastle as a security provider 
+
+1.) Download bouncycastle according to your java version. You can download 
+bouncycastle from the following link.
+http://www.bouncycastle.org/latest_releases.html
+2.) Add the bcprov-jdkXX-139.jar to your service's / client's classpath. 
+3.) Add the following line to java.security file which can be found in JRE's 
+lib/security directory as the last line.
+security.provider.X=org.bouncycastle.jce.provider.BouncyCastleProvider
  
 Before you try any of the samples makesure you
 
@@ -73,7 +83,6 @@ Crypto Notice
 
    Apache Santuario : http://santuario.apache.org/
    Apache WSS4J     : http://ws.apache.org/wss4j/
-   Bouncycastle     : http://www.bouncycastle.org/
 
 ___________________
 Support
