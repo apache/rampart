@@ -29,7 +29,7 @@
         <passwordCallbackClass>org.apache.rampart.samples.sample06.PWCBHandler</passwordCallbackClass>
         <signaturePropFile>client.properties</signaturePropFile>
         <signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
-        <encryptionKeyIdentifier>SKIKeyIdentifier</encryptionKeyIdentifier>
+        <encryptionKeyIdentifier>DirectReference</encryptionKeyIdentifier>
         <encryptionUser>service</encryptionUser>
       </action>
     </parameter>
