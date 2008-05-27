@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.apache.rampart</groupId>
         <artifactId>rampart-project</artifactId>
-        <version>642231</version>
+        <version>657510</version>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>

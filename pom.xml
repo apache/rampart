@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
     <description>WS-Security, WS-Trust and WS-SecureConversation implementaion for Apache
         Axis2</description>
-    <version>642186</version>
+    <version>657510</version>
     <name>Apache Rampart</name>
     <url>http://ws.apache.org/rampart</url>
 
@@ -89,9 +89,20 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
-            <id>axis2-rc4</id>
-            <name>Apache Axis2 RC4 repo</name>
-            <url>http://people.apache.org/~dims/axis2-1.4/RC4/m2-repo/</url>
+            <id>apache-snapshots</id>
+            <name>Apache Maven2 SNAPSHOTS</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <id>wss4j-proposed</id>
+            <name>Apache WSS4J 1.5.4</name>
+            <url>http://people.apache.org/~fadushin/stage/wss4j/1.5.4/maven</url>
             <layout>default</layout>
         </repository>
         <repository>
@@ -187,6 +198,7 @@
             <groupId>org.apache.axis2</groupId>
             <artifactId>mex</artifactId>
             <version>${axis2.version}</version>
+            <classifier>impl</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
@@ -467,14 +479,14 @@
 
     <properties>
 		<rampart.version>${pom.version}</rampart.version>
-        <rampart.mar.version>642186</rampart.mar.version>
-		<rahas.mar.version>642186</rahas.mar.version>
+        <rampart.mar.version>657510</rampart.mar.version>
+		<rahas.mar.version>657510</rahas.mar.version>
 		<axis2.version>1.4</axis2.version>
         <neethi.version>2.0.4</neethi.version>
         <axiom.version>1.2.7</axiom.version>
-        <wss4j.version>1.5.4-RC1</wss4j.version>
-        <woden.version>634519</woden.version>
-        <addressing.mar.version>SNAPSHOT</addressing.mar.version>
+        <wss4j.version>1.5.4</wss4j.version>
+        <woden.version>1.0M8</woden.version>
+        <addressing.mar.version>1.4</addressing.mar.version>
 
         <xmlsec.version>1.4.1</xmlsec.version>
         <opensaml.version>1.1</opensaml.version>
