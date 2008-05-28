@@ -24,7 +24,7 @@
 	<property name="temp.client.dir" value="build/temp_client"/>
 	
 	<property name="addressing.mar" value="addressing-1.4.mar"/>
-	<property name="rampart.mar" value="rampart-657510.mar"/>	
+	<property name="rampart.mar" value="rampart-1.4.mar"/>	
 	
 	<property name="client.port" value="8080"/>
 	<property name="server.port" value="8080"/>
@@ -136,17 +136,6 @@
 	<target name="client.10" if="env.AXIS2_HOME" depends="check.dependency">
 		<create.and.run.client sample.number="10"/>
 	</target>
-	
-	<!-- Sample Service 11 -->
-	<target name="service.11" if="env.AXIS2_HOME" depends="check.dependency">
-		<create.service.repo sample.number="11"/>
-	</target>
-
-	<!-- Sample Client 11 -->
-	<target name="client.11" if="env.AXIS2_HOME" depends="check.dependency">
-		<create.and.run.client sample.number="11"/>
-	</target>
-	
 	
 	<target name="clean">
 		<delete dir="build" />
