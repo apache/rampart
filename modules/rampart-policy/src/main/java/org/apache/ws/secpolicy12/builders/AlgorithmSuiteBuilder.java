@@ -36,7 +36,7 @@ public class AlgorithmSuiteBuilder implements AssertionBuilder {
         try {
             algorithmSuite.setAlgorithmSuite(policyElem.getFirstElement().getLocalName());
         } catch (WSSPolicyException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage());
         }
         
         return algorithmSuite;
