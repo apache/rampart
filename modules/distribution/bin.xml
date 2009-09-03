@@ -72,6 +72,10 @@
             <source>../../release-docs/release-notes.html</source>
             <outputDirectory>${dist.dir}</outputDirectory>
         </file>
+        <file>
+            <source>build.xml</source>
+            <outputDirectory>${dist.dir}</outputDirectory>
+        </file>
     </files>
 
 </assembly>
