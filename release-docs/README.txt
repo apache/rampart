@@ -1,12 +1,12 @@
 ======================================================
-Apache Rampart-1.5 build  (April 03, 2008)
+Apache Rampart-1.5 build  (Sep 03, 2009)
 
-http://ws.apache.org/axis2/modules/rampart/
+http://ws.apache.org/rampart/
 ------------------------------------------------------
 
-___________________
-Contents
-===================
+_______________________________
+Contents of Binary Distribution
+===============================
 
 lib      - This directory contains all the libraries required by rampart
            in addition to the libraries available in the axis2 standard binary 
@@ -22,9 +22,21 @@ samples  - This contains samples on using Apache Rampart and configuring
 README.txt - This file
 
 build.xml - Setup file to copy all jars to required places
+____________
+Installation
+============
 
-Installar
+Using Ant
+---------
+Run ant script on extracted binary distribution and it will copy the required files to Axis2. You have to set the AXIS2_HOME system variable to point to your Axis2 binary distribution. 
 
+Manual Installation
+-------------------
+You can copy the required libraries and module files manually. You need copy all the libraries in the lib directory of Rampart binary distribution to Axis2 lib directory and all the module files to in the modules directory of  Rampart binary distribution to Axis2 modules directory. 
+
+Axis2 lib directory – AXIS2_HOME/lib (Standard binary distribution ) or axis2/WEB-INF/lib (WAR)
+
+Axis2 modules directory – AXIS2_HOME/repository/modules (Standard binary distribution ) or axis2/WEB-INF/modules (WAR)
 
 
 IMPORTANT: 
