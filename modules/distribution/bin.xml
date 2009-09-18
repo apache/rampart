@@ -69,6 +69,11 @@
             <destName>NOTICE</destName>
         </file>
         <file>
+            <source>../../release-docs/ChangeLog.txt</source>
+            <outputDirectory>${dist.dir}</outputDirectory>
+            <destName>ChangeLog</destName>
+        </file>
+        <file>
             <source>../../release-docs/release-notes.html</source>
             <outputDirectory>${dist.dir}</outputDirectory>
         </file>
