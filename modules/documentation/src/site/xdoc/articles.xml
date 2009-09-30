@@ -53,6 +53,8 @@ Nandana Mihindukulasooriya</li>
 
 <h2>Presentations</h2>
 <ul>
+<li><a href="http://www.slideshare.net/prabathsiriwardena/the-secured-enterprise-leverage-openid-with-web-service">The Secured Enterprise</a>- By
+Prabath Siriwardena</li>
 <li><a href="http://wso2.org/library/136">Secure Web Services with Apache Rampart</a>- By
 Ruchith Fernando</li>
 <li><a href="http://wso2.org/library/2534">Apache Rahas</a>- By
@@ -63,6 +65,10 @@ Ruchith Fernando</li>
 <li><a href="http://wso2.org/library/695">Secure Messaging with Apache Rampart/Java</a>- By
 Ruchith Fernando</li>
 </ul>
+<h2>Blogs</h2>
+<ul>
+<li><a href="http://RampartFAQ.com">http://RampartFAQ.com</a></li>
+</ul>    
 <h2>Questions and Answers</h2>
 <ul>
 <li><a href="http://wso2.org/library/2507">Timestamp validation fails! Why?</a></li>

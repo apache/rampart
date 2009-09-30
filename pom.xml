@@ -6,8 +6,8 @@
     <groupId>org.apache.rampart</groupId>
     <artifactId>rampart-project</artifactId>
     <packaging>pom</packaging>
-    <description> WS-Security, WS-Trust and WS-SecureConversation implementaion for Apache Axis2 </description>
-    <version>1.5-RC1</version>
+    <description>WS-Security, WS-Trust and WS-SecureConversation implementaion for Apache Axis2</description>
+    <version>1.5</version>
     <name>Apache Rampart</name>
     <url>http://ws.apache.org/rampart</url>
 
@@ -27,7 +27,7 @@
         <system>JIRA</system>
         <url>http://issues.apache.org/jira/browse/RAMPART</url>
     </issueManagement>
-    
+
     <mailingLists>
         <mailingList>
             <name>Rampart Developers</name>
@@ -236,16 +236,16 @@
             <artifactId>opensaml</artifactId>
             <version>1.1</version>
         </dependency>
-	<dependency>
-           <groupId>org.opensaml</groupId>
-           <artifactId>opensaml</artifactId>
-           <version>2.2.3</version>
-       </dependency>
-       	<dependency>
-   		<groupId>org.slf4j</groupId>
-   		<artifactId>slf4j-jdk14</artifactId>
-   		<version>1.5.2</version>
-	</dependency>
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.5.2</version>
+        </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
@@ -361,6 +361,32 @@
                 </dependencies>
             </dependencyManagement>
         </profile>
+        <profile>
+            <id>sign</id>
+            <activation>
+                <property>
+                    <name>sign</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0-alpha-3</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
@@ -384,7 +410,7 @@
         <addressing.mar.version>1.5</addressing.mar.version>
 
         <wss4j.version>1.5.8</wss4j.version>
-	<xmlsec.version>1.4.2</xmlsec.version>
+        <xmlsec.version>1.4.2</xmlsec.version>
         <opensaml.version>1.1</opensaml.version>
 
         <bcprov.jdk14.version>140</bcprov.jdk14.version>
