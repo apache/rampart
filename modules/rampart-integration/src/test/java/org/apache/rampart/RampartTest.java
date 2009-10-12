@@ -16,180 +16,184 @@
 
 package org.apache.rampart;
 
+import junit.framework.TestCase;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.axis2.Constants;
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.ServiceContext;
-import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.integration.UtilServer;
 import org.apache.neethi.Policy;
 import org.apache.neethi.PolicyEngine;
-import org.apache.ws.security.handler.WSHandlerConstants;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
-import junit.framework.TestCase;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 
 public class RampartTest extends TestCase {
+    private Log log = LogFactory.getLog(RampartTest.class);
 
     public final static int PORT = UtilServer.TESTING_PORT;
+
+    ServiceClient serviceClient;
 
     public RampartTest(String name) {
         super(name);
     }
 
     protected void setUp() throws Exception {
-        UtilServer.start(Constants.TESTING_PATH + "rampart_service_repo" ,null);
+        Class.forName("org.apache.commons.logging.impl.Log4JLogger");
+        URL foo = ((URLClassLoader)Thread.currentThread().getContextClassLoader()).findResource("commons-logging.properties");
+        System.out.println(foo.toString());
+        log.info("setting up");
+        String repo = Constants.TESTING_PATH + "rampart_service_repo";
+        UtilServer.start(repo, null);
+
+        repo = Constants.TESTING_PATH + "rampart_client_repo";
+        ConfigurationContext configContext = ConfigurationContextFactory.
+                createConfigurationContextFromFileSystem(repo, null);
+        serviceClient = new ServiceClient(configContext, null);
+        serviceClient.engageModule("addressing");
+        serviceClient.engageModule("rampart");
     }
-    
+
 
     protected void tearDown() throws Exception {
         UtilServer.stop();
     }
 
-    
-    public void testWithPolicy() {
-        try {
+    public void testWithPolicy() throws Exception {
+        //TODO : figure this out !!
+        boolean basic256Supported = true;
 
-            String repo = Constants.TESTING_PATH + "rampart_client_repo";
-    
-            ConfigurationContext configContext = ConfigurationContextFactory.
-                        createConfigurationContextFromFileSystem(repo, null);
-            ServiceClient serviceClient = new ServiceClient(configContext, null);
-            
+        if (basic256Supported) {
+            System.out.println("\nWARNING: We are using key sizes from JCE " +
+                               "Unlimited Strength Jurisdiction Policy !!!");
+        }
 
-            serviceClient.engageModule("addressing");
-            serviceClient.engageModule("rampart");
-
-            //TODO : figure this out !!
-            boolean basic256Supported = true;
-            
-            if(basic256Supported) {
-                System.out.println("\nWARNING: We are using key sizes from JCE " +
-                        "Unlimited Strength Jurisdiction Policy !!!");
-            }
-            
-            for (int i = 1; i <= 29; i++) { //<-The number of tests we have
-                if(!basic256Supported && (i == 3 || i == 4 || i == 5)) {
-                    //Skip the Basic256 tests
-                    continue;
-                }
-
-                if(i == 25){
-                    // Testcase - 25 is failing, for the moment skipping it.
-                    continue;
-                }
-                Options options = new Options();
-                
-                if( i == 13 ) {
-                    continue; // Can't test Transport binding with Simple HTTP Server
-                    //Username token created with user/pass from options
-                    //options.setUserName("alice");
-                    //options.setPassword("password");
-                }
-                
-                System.out.println("Testing WS-Sec: custom scenario " + i);
-                options.setAction("urn:echo");
-                options.setTo(new EndpointReference("http://127.0.0.1:" +
-                                        PORT +  
-                                        "/axis2/services/SecureService" + i));
-                
-                ServiceContext context = serviceClient.getServiceContext();
-                context.setProperty(RampartMessageData.KEY_RAMPART_POLICY, 
-                        loadPolicy("/rampart/policy/" + i + ".xml"));
-                serviceClient.setOptions(options);
-
-                // Invoking the serive in the TestCase-28 should fail. So handling it differently..
-                if (i == 28) {
-                    try {
-                        //Blocking invocation
-                        serviceClient.sendReceive(getOMElement());
-                        fail("Service Should throw an error..");
-
-                    } catch (AxisFault axisFault) {
-                        assertEquals("Expected encrypted part missing", axisFault.getMessage());
-                    }
-                }
-
-                else{
-                    //Blocking invocation
-                    serviceClient.sendReceive(getEchoElement());
-                }
+        for (int i = 1; i <= 29; i++) { //<-The number of tests we have
+            if (!basic256Supported && (i == 3 || i == 4 || i == 5)) {
+                //Skip the Basic256 tests
+                continue;
             }
 
-            System.out.println("--------------Testing negative scenarios----------------------------");
+            if (i == 25) {
+                // Testcase - 25 is failing, for the moment skipping it.
+                continue;
+            }
+            Options options = new Options();
 
-            for (int i = 1; i <= 22; i++) {
-                if (!basic256Supported && (i == 3 || i == 4 || i == 5)) {
-                    //Skip the Basic256 tests
-                    continue;
-                }
-                Options options = new Options();
+            if (i == 13) {
+                continue; // Can't test Transport binding with Simple HTTP Server
+                //Username token created with user/pass from options
+                //options.setUserName("alice");
+                //options.setPassword("password");
+            }
 
-                if (i == 13) {
-                    continue;
-                }
+            System.out.println("Testing WS-Sec: custom scenario " + i);
+            options.setAction("urn:echo");
+            options.setTo(new EndpointReference("http://127.0.0.1:" +
+                                                PORT +
+                                                "/axis2/services/SecureService" + i));
 
-                System.out.println("Testing WS-Sec: negative scenario " + i);
-                options.setAction("urn:returnError");
-                options.setTo(new EndpointReference("http://127.0.0.1:" +
-                        PORT +
-                        "/axis2/services/SecureService" + i));
+            ServiceContext context = serviceClient.getServiceContext();
+            context.setProperty(RampartMessageData.KEY_RAMPART_POLICY,
+                                loadPolicy("/rampart/policy/" + i + ".xml"));
+            serviceClient.setOptions(options);
 
-                ServiceContext context = serviceClient.getServiceContext();
-                context.setProperty(RampartMessageData.KEY_RAMPART_POLICY,
-                        loadPolicy("/rampart/policy/" + i + ".xml"));
-                serviceClient.setOptions(options);
-
+            // Invoking the serive in the TestCase-28 should fail. So handling it differently..
+            if (i == 28) {
                 try {
                     //Blocking invocation
                     serviceClient.sendReceive(getOMElement());
                     fail("Service Should throw an error..");
 
                 } catch (AxisFault axisFault) {
-                    assertEquals("Testing negative scenarios with Apache Rampart. Intentional Exception", axisFault.getMessage());
+                    assertEquals("Expected encrypted part missing", axisFault.getMessage());
                 }
-            }
-
-            
-            for (int i = 1; i <= 3; i++) { //<-The number of tests we have
-                
-                if (i == 2 || i == 3) {
-                    continue; // Can't test Transport binding scenarios with Simple HTTP Server
-                }
-
-                Options options = new Options();
-                System.out.println("Testing WS-SecConv: custom scenario " + i);
-                options.setAction("urn:echo");
-                options.setTo(new EndpointReference("http://127.0.0.1:" + PORT + "/axis2/services/SecureServiceSC" + i));
-                serviceClient.getServiceContext().setProperty(RampartMessageData.KEY_RAMPART_POLICY, loadPolicy("/rampart/policy/sc-" + i + ".xml"));
-                serviceClient.setOptions(options);
-
+            } else {
                 //Blocking invocation
                 serviceClient.sendReceive(getEchoElement());
-                serviceClient.sendReceive(getEchoElement());
+            }
+        }
 
-                //Cancel the token
-                options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
-                serviceClient.sendReceive(getEchoElement());
+        System.out.println("--------------Testing negative scenarios----------------------------");
 
-                options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_FALSE);
-                serviceClient.sendReceive(getEchoElement());
-                options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
-                serviceClient.sendReceive(getEchoElement());
+        for (int i = 1; i <= 22; i++) {
+            if (!basic256Supported && (i == 3 || i == 4 || i == 5)) {
+                //Skip the Basic256 tests
+                continue;
+            }
+            Options options = new Options();
+
+            if (i == 13) {
+                continue;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
+            System.out.println("Testing WS-Sec: negative scenario " + i);
+            options.setAction("urn:returnError");
+            options.setTo(new EndpointReference("http://127.0.0.1:" +
+                                                PORT +
+                                                "/axis2/services/SecureService" + i));
+
+            ServiceContext context = serviceClient.getServiceContext();
+            context.setProperty(RampartMessageData.KEY_RAMPART_POLICY,
+                                loadPolicy("/rampart/policy/" + i + ".xml"));
+            serviceClient.setOptions(options);
+
+            try {
+                //Blocking invocation
+                serviceClient.sendReceive(getOMElement());
+                fail("Service Should throw an error..");
+
+            } catch (AxisFault axisFault) {
+                assertEquals(
+                        "Testing negative scenarios with Apache Rampart. Intentional Exception",
+                        axisFault.getMessage());
+            }
+        }
+    }
+
+    public void testSecureConversation() throws Exception {
+        for (int i = 1; i <= 3; i++) { //<-The number of tests we have
+
+            if (i == 2 || i == 3) {
+                continue; // Can't test Transport binding scenarios with Simple HTTP Server
+            }
+
+            Options options = new Options();
+            System.out.println("Testing WS-SecConv: custom scenario " + i);
+            options.setAction("urn:echo");
+            options.setTo(new EndpointReference(
+                    "http://127.0.0.1:" + PORT + "/axis2/services/SecureServiceSC" + i));
+            serviceClient.getServiceContext().setProperty(RampartMessageData.KEY_RAMPART_POLICY,
+                                                          loadPolicy("/rampart/policy/sc-" + i +
+                                                                     ".xml"));
+            serviceClient.setOptions(options);
+
+            //Blocking invocation
+            serviceClient.sendReceive(getEchoElement());
+            serviceClient.sendReceive(getEchoElement());
+
+            //Cancel the token
+            options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
+            serviceClient.sendReceive(getEchoElement());
+
+            options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_FALSE);
+            serviceClient.sendReceive(getEchoElement());
+
+            options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
+            serviceClient.sendReceive(getEchoElement());
         }
     }
 

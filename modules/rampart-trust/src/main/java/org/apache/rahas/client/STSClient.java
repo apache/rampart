@@ -132,9 +132,11 @@ public class STSClient {
             }
             
             client.getServiceContext().setProperty(RAMPART_POLICY, issuerPolicy);
-            client.getOptions().setSoapVersionURI(this.soapVersion);
+            final Options clientOptions = client.getOptions();
+            clientOptions.setSoapVersionURI(this.soapVersion);
+            clientOptions.setCallTransportCleanup(true);
             if(this.addressingNs != null) {
-                client.getOptions().setProperty(AddressingConstants.WS_ADDRESSING_VERSION, this.addressingNs);
+                clientOptions.setProperty(AddressingConstants.WS_ADDRESSING_VERSION, this.addressingNs);
             }
             client.engageModule("addressing");
             client.engageModule("rampart");
