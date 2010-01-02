@@ -90,6 +90,20 @@
     <repositories>
 
         <repository>
+            <id>wso2-maven2-repository</id>
+            <name>WSO2 Maven2 Repository</name>
+            <url>http://dist.wso2.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+        </repository>
+
+        <repository>
             <releases>
                 <enabled>false</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -406,7 +420,7 @@
         <rampart.mar.version>1.5</rampart.mar.version>
         <rahas.mar.version>1.5</rahas.mar.version>
 
-        <axis2.version>1.5</axis2.version>
+        <axis2.version>1.5.1</axis2.version>
         <axis2.transport.version>1.0.0</axis2.transport.version>
         <addressing.mar.version>1.5</addressing.mar.version>
 
