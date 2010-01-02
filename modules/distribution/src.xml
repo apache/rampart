@@ -31,4 +31,18 @@
             </excludes>
         </fileSet>
     </fileSets>
+
+    <files>
+        <file>
+            <source>../../release-docs/LICENSE.txt</source>
+            <outputDirectory>rampart-src-${rampart.version}</outputDirectory>
+            <destName>LICENSE</destName>
+        </file>
+        <file>
+            <source>../../release-docs/NOTICE.txt</source>
+            <outputDirectory>rampart-src-${rampart.version}</outputDirectory>
+            <destName>NOTICE</destName>
+        </file>
+    </files>
+
 </assembly>
