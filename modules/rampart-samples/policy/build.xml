@@ -24,7 +24,7 @@
 	<property name="keys.dir" value="../keys"/>
 	<property name="temp.client.dir" value="build/temp_client"/>
 	
-	<property name="addressing.mar" value="addressing-1.5.mar"/>
+	<property name="addressing.mar" value="addressing-1.5.1.mar"/>
 	<property name="rampart.mar" value="rampart-1.5.mar"/>
 	<property name="rahas.mar" value="rahas-1.5.mar"/>
 
